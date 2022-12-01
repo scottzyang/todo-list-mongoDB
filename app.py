@@ -29,5 +29,6 @@ def index():
 
 @app.post('/<id>/delete/')
 def delete(id):
+    # id is the mongo id in the route
     todos.delete_one({"_id": ObjectId(id)})
     return redirect(url_for('index'))
