@@ -14,4 +14,20 @@ todos = db.todos
 # route serves as Home page
 @app.route('/', methods=('GET', 'POST'))
 def index():
-    return render_template('index.html')
+    if request.method=='POST':
+        # get form and priorty content
+        content = request.form['content']
+        degree = request.form['priority']
+
+        # in the database, insert the content and priority
+        todos.insert_one({'content': content, 'priority': degree})
+        return redirect(url_for('index'))
+
+    # this finds all the todos and passes them into the index file.
+    all_todos = todos.find() # Add this line outside the if block! 
+    return render_template('index.html', todos=all_todos) # add todos here! 
+
+@app.post('/<id>/delete/')
+def delete(id):
+    todos.delete_one({"_id": ObjectId(id)})
+    return redirect(url_for('index'))
